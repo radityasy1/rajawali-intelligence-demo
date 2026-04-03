@@ -1,0 +1,112 @@
+============================================================
+PROSEDUR UPGRADE LAYANAN
+PT TELKOM INDONESIA
+Versi: 1.0 | Tanggal: 27 March 2026
+============================================================
+
+DAFTAR ISI
+----------------------------------------
+1. Syarat upgrade
+2. Paket yang tersedia untuk upgrade
+3. Proses pengajuan
+4. Waktu aktivasi
+5. Perubahan billing
+6. Rollback prosedur
+
+
+1. Syarat upgrade
+----------------------------------------
+Prosedur: Syarat upgrade
+
+Langkah-langkah yang harus dilakukan:
+1. Persiapan: Pastikan semua persyaratan telah dipenuhi
+2. Pelaksanaan: Ikuti prosedur standar yang telah ditetapkan
+3. Dokumentasi: Catat semua langkah yang dilakukan
+4. Verifikasi: Konfirmasi hasil dengan supervisor
+5. Serah terima: Dokumen hasil kepada pihak terkait
+
+Estimasi waktu: 5 jam kerja
+Penanggung jawab: Tim Syarat
+
+
+2. Paket yang tersedia untuk upgrade
+----------------------------------------
+Prosedur: Paket yang tersedia untuk upgrade
+
+Langkah-langkah yang harus dilakukan:
+1. Persiapan: Pastikan semua persyaratan telah dipenuhi
+2. Pelaksanaan: Ikuti prosedur standar yang telah ditetapkan
+3. Dokumentasi: Catat semua langkah yang dilakukan
+4. Verifikasi: Konfirmasi hasil dengan supervisor
+5. Serah terima: Dokumen hasil kepada pihak terkait
+
+Estimasi waktu: 4 jam kerja
+Penanggung jawab: Tim Paket
+
+
+3. Proses pengajuan
+----------------------------------------
+Prosedur: Proses pengajuan
+
+Langkah-langkah yang harus dilakukan:
+1. Persiapan: Pastikan semua persyaratan telah dipenuhi
+2. Pelaksanaan: Ikuti prosedur standar yang telah ditetapkan
+3. Dokumentasi: Catat semua langkah yang dilakukan
+4. Verifikasi: Konfirmasi hasil dengan supervisor
+5. Serah terima: Dokumen hasil kepada pihak terkait
+
+Estimasi waktu: 2 jam kerja
+Penanggung jawab: Tim Proses
+
+
+4. Waktu aktivasi
+----------------------------------------
+Prosedur: Waktu aktivasi
+
+Langkah-langkah yang harus dilakukan:
+1. Persiapan: Pastikan semua persyaratan telah dipenuhi
+2. Pelaksanaan: Ikuti prosedur standar yang telah ditetapkan
+3. Dokumentasi: Catat semua langkah yang dilakukan
+4. Verifikasi: Konfirmasi hasil dengan supervisor
+5. Serah terima: Dokumen hasil kepada pihak terkait
+
+Estimasi waktu: 5 jam kerja
+Penanggung jawab: Tim Waktu
+
+
+5. Perubahan billing
+----------------------------------------
+Prosedur: Perubahan billing
+
+Langkah-langkah yang harus dilakukan:
+1. Persiapan: Pastikan semua persyaratan telah dipenuhi
+2. Pelaksanaan: Ikuti prosedur standar yang telah ditetapkan
+3. Dokumentasi: Catat semua langkah yang dilakukan
+4. Verifikasi: Konfirmasi hasil dengan supervisor
+5. Serah terima: Dokumen hasil kepada pihak terkait
+
+Estimasi waktu: 3 jam kerja
+Penanggung jawab: Tim Perubahan
+
+
+6. Rollback prosedur
+----------------------------------------
+Prosedur: Rollback prosedur
+
+Langkah-langkah yang harus dilakukan:
+1. Persiapan: Pastikan semua persyaratan telah dipenuhi
+2. Pelaksanaan: Ikuti prosedur standar yang telah ditetapkan
+3. Dokumentasi: Catat semua langkah yang dilakukan
+4. Verifikasi: Konfirmasi hasil dengan supervisor
+5. Serah terima: Dokumen hasil kepada pihak terkait
+
+Estimasi waktu: 3 jam kerja
+Penanggung jawab: Tim Rollback
+
+
+
+============================================================
+Dokumen ini dibuat untuk keperluan demonstrasi.
+PT Telkom Indonesia - Divisi IndiHome
+(c) 2026 PT Telekomunikasi Indonesia Tbk
+============================================================

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Source View: {{ filename }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; background: #f0f2f5; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; flex-direction: column; height: 100vh; color: #1f2937; overflow: hidden; }
+        
+        /* Header Styling */
+        .header { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px);
+            padding: 12px 24px; 
+            border-bottom: 1px solid #e5e7eb; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); 
+            z-index: 50; 
+            flex-shrink: 0;
+        }
+
+        .doc-info { display: flex; flex-direction: column; max-width: 60%; }
+        .doc-filename { font-weight: 600; font-size: 15px; color: #111827; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .doc-meta { font-size: 12px; color: #6b7280; margin-top: 2px; }
+
+        .controls { display: flex; align-items: center; gap: 12px; }
+        
+        .page-badge { 
+            background: #eff6ff; color: #3b82f6; 
+            padding: 4px 12px; border-radius: 20px; 
+            font-size: 13px; font-weight: 700; border: 1px solid #dbeafe;
+        }
+
+        .btn { 
+            padding: 8px 16px; border: 1px solid #d1d5db; 
+            background: white; border-radius: 8px; 
+            cursor: pointer; font-size: 13px; font-weight: 500;
+            text-decoration: none; color: #374151; 
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn:hover { background: #f9fafb; border-color: #9ca3af; color: #111827; }
+        .btn:disabled, .btn[disabled] { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+        .btn-primary { background: #4f46e5; color: white; border: none; }
+        .btn-primary:hover { background: #4338ca; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+
+        /* Viewer Area */
+        .viewer-container { 
+            flex: 1; overflow: auto; 
+            display: flex; justify-content: center; 
+            padding: 30px; 
+            background-color: #f3f4f6;
+            position: relative;
+        }
+        
+        .page-image { 
+            max-width: 100%; height: auto; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1); 
+            border-radius: 8px; 
+            align-self: flex-start; 
+            background: white; 
+            min-height: 600px; 
+            display: block;
+        }
+
+        /* Error State (Hidden by default) */
+        .error-state {
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; text-align: center; color: #6b7280; width: 100%;
+        }
+        .error-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+
+        @media (max-width: 768px) {
+            .header { padding: 10px 15px; }
+            .btn span { display: none; }
+            .viewer-container { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="doc-info">
+            <div class="doc-filename" title="{{ filename }}">{{ filename }}</div>
+            <div class="doc-meta">Viewing Page {{ page }}</div>
+        </div>
+        <div class="controls">
+            <span class="page-badge">Page {{ page }}</span>
+            <div style="display:flex; gap: 5px;">
+                {% if page > 1 %}
+                <a href="?page={{ page - 1 }}" class="btn">&larr; <span>Prev</span></a>
+                {% else %}
+                <span class="btn" disabled>&larr; <span>Prev</span></span>
+                {% endif %}
+                <a href="?page={{ page + 1 }}" class="btn"><span>Next</span> &rarr;</a>
+            </div>
+            <!-- API Prefix is injected by backend to ensure correct path -->
+            <a href="{{ api_prefix }}/api/download/{{ quoted_filename }}" target="_blank" class="btn btn-primary">
+                Download PDF
+            </a>
+        </div>
+    </div>
+    
+    <div class="viewer-container">
+        <!-- 
+            The image source includes the api_prefix.
+            onerror handles cases where page is out of bounds (like page 34/25).
+        -->
+        <img src="{{ api_prefix }}/api/view_page/{{ quoted_filename }}/{{ page }}" 
+             class="page-image" 
+             alt="Page {{ page }}"
+             onload="this.style.minHeight='auto'"
+             onerror="this.style.display='none'; document.getElementById('error-view').style.display='flex'">
+        
+        <div id="error-view" class="error-state">
+            <div class="error-icon">⚠️</div>
+            <h3>Unable to load page {{ page }}</h3>
+            <p>It might be out of range, or the file path is invalid.</p>
+        </div>
+    </div>
+</body>
+</html>

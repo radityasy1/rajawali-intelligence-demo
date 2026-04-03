@@ -1,0 +1,112 @@
+============================================================
+SOP INSTALASI - PROSEDUR STANDAR
+PT TELKOM INDONESIA
+Versi: 1.0 | Tanggal: 27 March 2026
+============================================================
+
+DAFTAR ISI
+----------------------------------------
+1. Persiapan sebelum instalasi
+2. Survey lokasi
+3. Pemasangan kabel
+4. Konfigurasi router
+5. Testing koneksi
+6. Serah terima pelanggan
+
+
+1. Persiapan sebelum instalasi
+----------------------------------------
+Prosedur: Persiapan sebelum instalasi
+
+Langkah-langkah yang harus dilakukan:
+1. Persiapan: Pastikan semua persyaratan telah dipenuhi
+2. Pelaksanaan: Ikuti prosedur standar yang telah ditetapkan
+3. Dokumentasi: Catat semua langkah yang dilakukan
+4. Verifikasi: Konfirmasi hasil dengan supervisor
+5. Serah terima: Dokumen hasil kepada pihak terkait
+
+Estimasi waktu: 3 jam kerja
+Penanggung jawab: Tim Persiapan
+
+
+2. Survey lokasi
+----------------------------------------
+Prosedur: Survey lokasi
+
+Langkah-langkah yang harus dilakukan:
+1. Persiapan: Pastikan semua persyaratan telah dipenuhi
+2. Pelaksanaan: Ikuti prosedur standar yang telah ditetapkan
+3. Dokumentasi: Catat semua langkah yang dilakukan
+4. Verifikasi: Konfirmasi hasil dengan supervisor
+5. Serah terima: Dokumen hasil kepada pihak terkait
+
+Estimasi waktu: 4 jam kerja
+Penanggung jawab: Tim Survey
+
+
+3. Pemasangan kabel
+----------------------------------------
+Prosedur: Pemasangan kabel
+
+Langkah-langkah yang harus dilakukan:
+1. Persiapan: Pastikan semua persyaratan telah dipenuhi
+2. Pelaksanaan: Ikuti prosedur standar yang telah ditetapkan
+3. Dokumentasi: Catat semua langkah yang dilakukan
+4. Verifikasi: Konfirmasi hasil dengan supervisor
+5. Serah terima: Dokumen hasil kepada pihak terkait
+
+Estimasi waktu: 2 jam kerja
+Penanggung jawab: Tim Pemasangan
+
+
+4. Konfigurasi router
+----------------------------------------
+Prosedur: Konfigurasi router
+
+Langkah-langkah yang harus dilakukan:
+1. Persiapan: Pastikan semua persyaratan telah dipenuhi
+2. Pelaksanaan: Ikuti prosedur standar yang telah ditetapkan
+3. Dokumentasi: Catat semua langkah yang dilakukan
+4. Verifikasi: Konfirmasi hasil dengan supervisor
+5. Serah terima: Dokumen hasil kepada pihak terkait
+
+Estimasi waktu: 4 jam kerja
+Penanggung jawab: Tim Konfigurasi
+
+
+5. Testing koneksi
+----------------------------------------
+Prosedur: Testing koneksi
+
+Langkah-langkah yang harus dilakukan:
+1. Persiapan: Pastikan semua persyaratan telah dipenuhi
+2. Pelaksanaan: Ikuti prosedur standar yang telah ditetapkan
+3. Dokumentasi: Catat semua langkah yang dilakukan
+4. Verifikasi: Konfirmasi hasil dengan supervisor
+5. Serah terima: Dokumen hasil kepada pihak terkait
+
+Estimasi waktu: 1 jam kerja
+Penanggung jawab: Tim Testing
+
+
+6. Serah terima pelanggan
+----------------------------------------
+Prosedur: Serah terima pelanggan
+
+Langkah-langkah yang harus dilakukan:
+1. Persiapan: Pastikan semua persyaratan telah dipenuhi
+2. Pelaksanaan: Ikuti prosedur standar yang telah ditetapkan
+3. Dokumentasi: Catat semua langkah yang dilakukan
+4. Verifikasi: Konfirmasi hasil dengan supervisor
+5. Serah terima: Dokumen hasil kepada pihak terkait
+
+Estimasi waktu: 3 jam kerja
+Penanggung jawab: Tim Serah
+
+
+
+============================================================
+Dokumen ini dibuat untuk keperluan demonstrasi.
+PT Telkom Indonesia - Divisi IndiHome
+(c) 2026 PT Telekomunikasi Indonesia Tbk
+============================================================

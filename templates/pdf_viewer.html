@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Viewer - {{ document_name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/primeicons@6.0.1/primeicons.css">
+    <style>
+        :root {
+            --font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --primary-accent: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --accent-hover: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            --glass-primary: rgba(255, 255, 255, 0.08);
+            --glass-secondary: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-hover: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --border-radius: 12px;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-family); background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 25%, #2d2d2d 50%, #1a1a1a 75%, #0c0c0c 100%); color: var(--text-primary); min-height: 100vh; overflow: hidden; }
+        .pdf-viewer { height: 100vh; display: flex; flex-direction: column; }
+        .viewer-header { background: var(--glass-primary); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .document-info { display: flex; align-items: center; gap: 1rem; }
+        .document-icon { background: var(--primary-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.5rem; }
+        .document-title { font-weight: 600; color: var(--text-primary); font-size: 1.125rem; }
+        .document-meta { font-size: 0.875rem; color: var(--text-muted); }
+        .nav-controls { display: flex; align-items: center; gap: 1rem; }
+        .nav-group { display: flex; align-items: center; gap: 0.5rem; }
+        .nav-btn { background: var(--glass-secondary); border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 0.5rem; color: var(--text-secondary); cursor: pointer; transition: var(--transition-smooth); min-width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+        .nav-btn:hover:not(:disabled) { background: var(--glass-hover); color: var(--text-primary); transform: translateY(-1px); }
+        .nav-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .page-input { background: var(--glass-secondary); border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 0.5rem 0.75rem; color: var(--text-primary); font-size: 0.875rem; width: 60px; text-align: center; }
+        .page-input:focus { outline: none; border-color: var(--text-primary); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1); }
+        .page-info { color: var(--text-secondary); font-size: 0.875rem; white-space: nowrap; }
+        .zoom-control { display: flex; align-items: center; gap: 0.5rem; }
+        .zoom-level { color: var(--text-secondary); font-size: 0.875rem; min-width: 50px; text-align: center; }
+        .viewer-content { flex: 1; display: flex; align-items: center; justify-content: center; overflow: auto; padding: 2rem; position: relative; }
+        .page-container { background: white; border-radius: var(--border-radius); box-shadow: var(--shadow-glass); position: relative; transition: var(--transition-smooth); }
+        .page-image { display: block; max-width: 100%; height: auto; border-radius: var(--border-radius); }
+        .loading-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; border-radius: var(--border-radius); }
+        .loading-spinner { width: 40px; height: 40px; border: 3px solid var(--glass-border); border-top: 3px solid var(--text-primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .close-btn { background: var(--glass-secondary); border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 0.5rem 1rem; color: var(--text-secondary); cursor: pointer; transition: var(--transition-smooth); display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; }
+        .close-btn:hover { background: var(--glass-hover); color: var(--text-primary); }
+        .error-message { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--border-radius); padding: 1rem; color: #ef4444; text-align: center; margin: 2rem; }
+        
+        /* Authentication Overlay */
+        .auth-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        .auth-container { background: var(--glass-primary); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 2rem; max-width: 400px; width: 90%; box-shadow: var(--shadow-glass); }
+        .auth-header { text-align: center; margin-bottom: 2rem; }
+        .auth-icon { font-size: 3rem; background: var(--primary-accent); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 1rem; }
+        .auth-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .auth-subtitle { color: var(--text-secondary); font-size: 0.875rem; }
+        .auth-form { display: flex; flex-direction: column; gap: 1rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .form-label { font-size: 0.875rem; font-weight: 500; color: var(--text-secondary); }
+        .form-input { background: var(--glass-secondary); border: 1px solid var(--glass-border); border-radius: var(--border-radius); padding: 0.75rem; color: var(--text-primary); font-size: 0.875rem; }
+        .form-input:focus { outline: none; border-color: var(--text-primary); box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1); }
+        .auth-button { background: var(--primary-accent); color: white; border: none; border-radius: var(--border-radius); padding: 0.75rem 1.5rem; font-weight: 600; cursor: pointer; transition: var(--transition-smooth); }
+        .auth-button:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .auth-button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .auth-error { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--border-radius); padding: 0.75rem; color: #ef4444; font-size: 0.875rem; margin-top: 1rem; }
+        .hidden { display: none !important; }
+        
+        @media (max-width: 768px) { 
+            .viewer-header { padding: 1rem; flex-direction: column; gap: 1rem; }
+            .nav-controls { flex-wrap: wrap; justify-content: center; }
+            .document-info { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .viewer-content { padding: 1rem; }
+            .auth-container { margin: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication Overlay -->
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-container">
+            <div class="auth-header">
+                <div class="auth-icon">
+                    <i class="pi pi-lock"></i>
+                </div>
+                <h2 class="auth-title">Authentication Required</h2>
+                <p class="auth-subtitle">Please login to view this document</p>
+            </div>
+            
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <input type="text" id="username" class="form-input" placeholder="Enter your username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="auth-button" id="loginButton">
+                    <span id="loginText">Login</span>
+                    <div id="loginSpinner" class="loading-spinner hidden" style="width: 20px; height: 20px; margin: 0 auto;"></div>
+                </button>
+                
+                <div id="authError" class="auth-error hidden"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- PDF Viewer (Hidden until authenticated) -->
+    <div class="pdf-viewer hidden" id="pdfViewer">
+        <header class="viewer-header">
+            <div class="document-info">
+                <i class="pi pi-file-pdf document-icon"></i>
+                <div>
+                    <div class="document-title" id="documentTitle">{{ document_name }}</div>
+                    <div class="document-meta" id="documentMeta">Loading...</div>
+                </div>
+            </div>
+            <div class="nav-controls">
+                <div class="nav-group">
+                    <button class="nav-btn" id="firstPageBtn" title="First Page">
+                        <i class="pi pi-angle-double-left"></i>
+                    </button>
+                    <button class="nav-btn" id="prevPageBtn" title="Previous Page">
+                        <i class="pi pi-angle-left"></i>
+                    </button>
+                </div>
+                <div class="nav-group">
+                    <input type="number" class="page-input" id="pageInput" min="1" value="1">
+                    <span class="page-info">of <span id="totalPages">1</span></span>
+                </div>
+                <div class="nav-group">
+                    <button class="nav-btn" id="nextPageBtn" title="Next Page">
+                        <i class="pi pi-angle-right"></i>
+                    </button>
+                    <button class="nav-btn" id="lastPageBtn" title="Last Page">
+                        <i class="pi pi-angle-double-right"></i>
+                    </button>
+                </div>
+                <div class="zoom-control">
+                    <button class="nav-btn" id="zoomOutBtn" title="Zoom Out">
+                        <i class="pi pi-minus"></i>
+                    </button>
+                    <span class="zoom-level" id="zoomLevel">100%</span>
+                    <button class="nav-btn" id="zoomInBtn" title="Zoom In">
+                        <i class="pi pi-plus"></i>
+                    </button>
+                </div>
+                <button class="close-btn" onclick="window.close()" title="Close Viewer">
+                    <i class="pi pi-times"></i>
+                    <span>Close</span>
+                </button>
+            </div>
+        </header>
+        <main class="viewer-content" id="viewerContent">
+            <div class="page-container" id="pageContainer">
+                <img class="page-image" id="pageImage" alt="PDF Page">
+                <div class="loading-overlay" id="loadingOverlay">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        class AuthenticatedPDFViewer {
+            constructor() {
+                this.documentFilename = '{{ document_filename }}';
+                this.currentPage = 1;
+                this.totalPages = {{ total_pages }};
+                this.zoomLevel = 1.0;
+                this.relevantPages = {{ relevant_pages|safe }};
+                this.authenticated = false;
+                
+                this.initializeAuth();
+            }
+
+            async initializeAuth() {
+                try {
+                    const response = await fetch('/check-auth');
+                    if (response.ok) {
+                        const authData = await response.json();
+                        if (authData.authenticated) {
+                            this.authenticated = true;
+                            this.showPDFViewer();
+                            this.initializePDFViewer();
+                            return;
+                        }
+                    }
+                } catch (error) {
+                    console.log('User not authenticated, showing login form');
+                }
+                
+                this.showAuthOverlay();
+                this.bindAuthEvents();
+            }
+
+            showAuthOverlay() {
+                document.getElementById('authOverlay').classList.remove('hidden');
+                document.getElementById('pdfViewer').classList.add('hidden');
+                document.getElementById('username').focus();
+            }
+
+            showPDFViewer() {
+                document.getElementById('authOverlay').classList.add('hidden');
+                document.getElementById('pdfViewer').classList.remove('hidden');
+            }
+
+            bindAuthEvents() {
+                const loginForm = document.getElementById('loginForm');
+                const usernameInput = document.getElementById('username');
+                const passwordInput = document.getElementById('password');
+
+                loginForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleLogin();
+                });
+
+                // Enter key support
+                [usernameInput, passwordInput].forEach(input => {
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            this.handleLogin();
+                        }
+                    });
+                });
+            }
+
+            async handleLogin() {
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                const loginButton = document.getElementById('loginButton');
+                const loginText = document.getElementById('loginText');
+                const loginSpinner = document.getElementById('loginSpinner');
+                const authError = document.getElementById('authError');
+
+                if (!username || !password) {
+                    this.showAuthError('Please enter both username and password');
+                    return;
+                }
+
+                // Show loading state
+                loginButton.disabled = true;
+                loginText.textContent = 'Logging in...';
+                loginSpinner.classList.remove('hidden');
+                authError.classList.add('hidden');
+
+                try {
+                    const response = await fetch('/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            username: username,
+                            password: password
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.success) {
+                        this.authenticated = true;
+                        this.showPDFViewer();
+                        this.initializePDFViewer();
+                    } else {
+                        this.showAuthError(data.detail || 'Login failed. Please check your credentials.');
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    this.showAuthError('Network error. Please try again.');
+                } finally {
+                    // Reset loading state
+                    loginButton.disabled = false;
+                    loginText.textContent = 'Login';
+                    loginSpinner.classList.add('hidden');
+                }
+            }
+
+            showAuthError(message) {
+                const authError = document.getElementById('authError');
+                authError.textContent = message;
+                authError.classList.remove('hidden');
+            }
+
+            initializePDFViewer() {
+                this.initializeElements();
+                this.bindEvents();
+                this.loadDocumentInfo();
+                this.loadPage(1);
+            }
+
+            initializeElements() {
+                this.pageImage = document.getElementById('pageImage');
+                this.pageInput = document.getElementById('pageInput');
+                this.totalPagesSpan = document.getElementById('totalPages');
+                this.zoomLevelSpan = document.getElementById('zoomLevel');
+                this.loadingOverlay = document.getElementById('loadingOverlay');
+                this.pageContainer = document.getElementById('pageContainer');
+                this.documentMeta = document.getElementById('documentMeta');
+                this.firstPageBtn = document.getElementById('firstPageBtn');
+                this.prevPageBtn = document.getElementById('prevPageBtn');
+                this.nextPageBtn = document.getElementById('nextPageBtn');
+                this.lastPageBtn = document.getElementById('lastPageBtn');
+                this.zoomInBtn = document.getElementById('zoomInBtn');
+                this.zoomOutBtn = document.getElementById('zoomOutBtn');
+                this.totalPagesSpan.textContent = this.totalPages;
+                this.pageInput.max = this.totalPages;
+                this.updateZoomDisplay();
+            }
+
+            bindEvents() {
+                this.firstPageBtn.addEventListener('click', () => this.goToPage(1));
+                this.prevPageBtn.addEventListener('click', () => this.goToPage(this.currentPage - 1));
+                this.nextPageBtn.addEventListener('click', () => this.goToPage(this.currentPage + 1));
+                this.lastPageBtn.addEventListener('click', () => this.goToPage(this.totalPages));
+                this.pageInput.addEventListener('change', () => {
+                    const page = parseInt(this.pageInput.value);
+                    if (page >= 1 && page <= this.totalPages) {
+                        this.goToPage(page);
+                    } else {
+                        this.pageInput.value = this.currentPage;
+                    }
+                });
+                this.zoomInBtn.addEventListener('click', () => this.zoom(1.2));
+                this.zoomOutBtn.addEventListener('click', () => this.zoom(0.8));
+                document.addEventListener('keydown', (e) => {
+                    if (!this.authenticated) return;
+                    switch(e.key) {
+                        case 'ArrowLeft': e.preventDefault(); this.goToPage(this.currentPage - 1); break;
+                        case 'ArrowRight': e.preventDefault(); this.goToPage(this.currentPage + 1); break;
+                        case 'Home': e.preventDefault(); this.goToPage(1); break;
+                        case 'End': e.preventDefault(); this.goToPage(this.totalPages); break;
+                        case 'Escape': window.close(); break;
+                    }
+                });
+                this.pageContainer.addEventListener('wheel', (e) => {
+                    if (!this.authenticated) return;
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+                        this.zoom(zoomFactor);
+                    }
+                });
+            }
+
+            async loadDocumentInfo() {
+                try {
+                    const response = await fetch(`/api/pdf/info/${encodeURIComponent(this.documentFilename)}`);
+                    if (response.ok) {
+                        const info = await response.json();
+                        this.totalPages = info.total_pages;
+                        this.totalPagesSpan.textContent = this.totalPages;
+                        this.pageInput.max = this.totalPages;
+                        const fileSize = (info.file_size / (1024 * 1024)).toFixed(1);
+                        this.documentMeta.textContent = `${this.totalPages} pages • ${fileSize} MB`;
+                    }
+                } catch (error) {
+                    console.error('Failed to load document info:', error);
+                    this.documentMeta.textContent = `${this.totalPages} pages`;
+                }
+            }
+
+            async loadPage(pageNumber) {
+                if (pageNumber < 1 || pageNumber > this.totalPages) return;
+                this.showLoading(true);
+                this.currentPage = pageNumber;
+                this.updateControls();
+                try {
+                    const imageUrl = `/api/pdf/page/${encodeURIComponent(this.documentFilename)}/${pageNumber}`;
+                    const img = new Image();
+                    img.onload = () => {
+                        this.pageImage.src = imageUrl;
+                        this.showLoading(false);
+                    };
+                    img.onerror = () => {
+                        this.showError(`Failed to load page ${pageNumber}`);
+                        this.showLoading(false);
+                    };
+                    img.src = imageUrl;
+                } catch (error) {
+                    console.error('Error loading page:', error);
+                    this.showError(`Error loading page ${pageNumber}`);
+                    this.showLoading(false);
+                }
+            }
+
+            goToPage(pageNumber) {
+                if (pageNumber >= 1 && pageNumber <= this.totalPages && pageNumber !== this.currentPage) {
+                    this.loadPage(pageNumber);
+                }
+            }
+
+            zoom(factor) {
+                this.zoomLevel *= factor;
+                this.zoomLevel = Math.max(0.1, Math.min(5.0, this.zoomLevel));
+                this.updateZoomDisplay();
+                this.applyZoom();
+            }
+
+            updateZoomDisplay() {
+                this.zoomLevelSpan.textContent = Math.round(this.zoomLevel * 100) + '%';
+            }
+
+            applyZoom() {
+                this.pageContainer.style.transform = `scale(${this.zoomLevel})`;
+                this.pageContainer.style.transformOrigin = 'center center';
+            }
+
+            updateControls() {
+                this.pageInput.value = this.currentPage;
+                this.firstPageBtn.disabled = this.currentPage === 1;
+                this.prevPageBtn.disabled = this.currentPage === 1;
+                this.nextPageBtn.disabled = this.currentPage === this.totalPages;
+                this.lastPageBtn.disabled = this.currentPage === this.totalPages;
+                if (this.relevantPages.includes(this.currentPage)) {
+                    this.pageContainer.style.boxShadow = '0 0 20px rgba(102, 126, 234, 0.5)';
+                } else {
+                    this.pageContainer.style.boxShadow = 'var(--shadow-glass)';
+                }
+            }
+
+            showLoading(show) {
+                this.loadingOverlay.style.display = show ? 'flex' : 'none';
+            }
+
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = message;
+                const existingError = document.querySelector('.error-message');
+                if (existingError) existingError.remove();
+                document.querySelector('.viewer-content').appendChild(errorDiv);
+                setTimeout(() => errorDiv.remove(), 5000);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new AuthenticatedPDFViewer();
+        });
+    </script>
+</body>
+</html>

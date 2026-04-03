@@ -1,0 +1,70 @@
+============================================================
+FAQ BROADBAND INTERNET
+PT TELKOM INDONESIA
+Versi: 1.0 | Tanggal: 27 March 2026
+============================================================
+
+DAFTAR ISI
+----------------------------------------
+1. Apa itu broadband
+2. Perbedaan speed tier
+3. Kecepatan upload vs download
+4. FUP (Fair Usage Policy)
+5. IP Public dan Static IP
+6. Latency dan ping
+
+
+1. Apa itu broadband
+----------------------------------------
+Pertanyaan: Apa itu broadband
+Jawaban: Informasi lengkap mengenai apa itu broadband dapat ditemukan di bagian ini.
+Untuk informasi lebih lanjut, silakan hubungi customer service IndiHome di 147.
+Atau kunjungi website resmi di www.indihome.co.id
+
+
+2. Perbedaan speed tier
+----------------------------------------
+Pertanyaan: Perbedaan speed tier
+Jawaban: Informasi lengkap mengenai perbedaan speed tier dapat ditemukan di bagian ini.
+Untuk informasi lebih lanjut, silakan hubungi customer service IndiHome di 147.
+Atau kunjungi website resmi di www.indihome.co.id
+
+
+3. Kecepatan upload vs download
+----------------------------------------
+Pertanyaan: Kecepatan upload vs download
+Jawaban: Informasi lengkap mengenai kecepatan upload vs download dapat ditemukan di bagian ini.
+Untuk informasi lebih lanjut, silakan hubungi customer service IndiHome di 147.
+Atau kunjungi website resmi di www.indihome.co.id
+
+
+4. FUP (Fair Usage Policy)
+----------------------------------------
+Pertanyaan: FUP (Fair Usage Policy)
+Jawaban: Informasi lengkap mengenai fup (fair usage policy) dapat ditemukan di bagian ini.
+Untuk informasi lebih lanjut, silakan hubungi customer service IndiHome di 147.
+Atau kunjungi website resmi di www.indihome.co.id
+
+
+5. IP Public dan Static IP
+----------------------------------------
+Pertanyaan: IP Public dan Static IP
+Jawaban: Informasi lengkap mengenai ip public dan static ip dapat ditemukan di bagian ini.
+Untuk informasi lebih lanjut, silakan hubungi customer service IndiHome di 147.
+Atau kunjungi website resmi di www.indihome.co.id
+
+
+6. Latency dan ping
+----------------------------------------
+Pertanyaan: Latency dan ping
+Jawaban: Informasi lengkap mengenai latency dan ping dapat ditemukan di bagian ini.
+Untuk informasi lebih lanjut, silakan hubungi customer service IndiHome di 147.
+Atau kunjungi website resmi di www.indihome.co.id
+
+
+
+============================================================
+Dokumen ini dibuat untuk keperluan demonstrasi.
+PT Telkom Indonesia - Divisi IndiHome
+(c) 2026 PT Telekomunikasi Indonesia Tbk
+============================================================

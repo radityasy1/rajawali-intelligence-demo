@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Channel Message: {{ message_id }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-message: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --accent-amber: #f59e0b;
+            --accent-amber-light: #fef3c7;
+            --accent-amber-dark: #d97706;
+            --border-color: #e2e8f0;
+            --border-highlight: #f59e0b;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #0f172a;
+                --bg-secondary: #1e293b;
+                --bg-card: #1e293b;
+                --bg-message: #334155;
+                --text-primary: #f1f5f9;
+                --text-secondary: #cbd5e1;
+                --text-muted: #64748b;
+                --border-color: #334155;
+                --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+                --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+                --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .channel-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-amber) 0%, var(--accent-amber-dark) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-md);
+        }
+
+        .channel-icon svg {
+            width: 26px;
+            height: 26px;
+            fill: white;
+        }
+
+        .header-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .header-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .message-badge {
+            font-family: 'SF Mono', 'Roboto Mono', monospace;
+            font-size: 12px;
+            font-weight: 500;
+            background: var(--accent-amber-light);
+            color: var(--accent-amber-dark);
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--accent-amber);
+        }
+
+        .header-meta {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .meta-separator {
+            width: 4px;
+            height: 4px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        /* Main Content */
+        .content {
+            padding: 24px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Media Section */
+        .media-section {
+            margin-bottom: 20px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .media-section img {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: var(--bg-card);
+        }
+
+        /* Summary Card */
+        .summary-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-amber) 0%, var(--accent-amber-dark) 100%);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .card-icon {
+            width: 18px;
+            height: 18px;
+            stroke: var(--accent-amber);
+            stroke-width: 2;
+        }
+
+        .card-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--accent-amber-dark);
+        }
+
+        .summary-text {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        /* Message Bubble */
+        .message-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .message-bubble {
+            background: var(--bg-message);
+            border-radius: var(--radius-lg);
+            border-top-left-radius: 4px;
+            padding: 20px 24px;
+            position: relative;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .bubble-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .bubble-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }
+
+        .message-content {
+            font-size: 15px;
+            line-height: 1.75;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* Timestamp */
+        .timestamp-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 20px;
+            background: var(--bg-card);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .timestamp-icon {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-muted);
+            stroke-width: 2;
+        }
+
+        .timestamp-text {
+            font-family: 'SF Mono', 'Roboto Mono', monospace;
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 16px;
+            opacity: 0.4;
+            stroke: var(--text-muted);
+        }
+
+        .empty-text {
+            font-size: 15px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .media-section {
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .summary-card {
+            animation: fadeInUp 0.35s ease-out;
+            animation-delay: 0.05s;
+            animation-fill-mode: both;
+        }
+
+        .message-container {
+            animation: fadeInUp 0.4s ease-out;
+            animation-delay: 0.1s;
+            animation-fill-mode: both;
+        }
+
+        .timestamp-bar {
+            animation: fadeInUp 0.45s ease-out;
+            animation-delay: 0.15s;
+            animation-fill-mode: both;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .header {
+                padding: 14px 16px;
+            }
+            .content {
+                padding: 16px;
+            }
+            .message-bubble {
+                padding: 16px;
+            }
+            .summary-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="channel-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
+            </svg>
+        </div>
+        <div class="header-content">
+            <div class="header-title">
+                Channel Source
+                <span class="message-badge">#{{ message_id }}</span>
+            </div>
+            <div class="header-meta">
+                <span>Telegram Internal</span>
+                <span class="meta-separator"></span>
+                <span>Message Preview</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content">
+        {% if media_url %}
+        <!-- Media Section -->
+        <section class="media-section">
+            <img src="{{ media_url }}" alt="Channel message image" loading="lazy" onerror="this.parentElement.style.display='none'">
+        </section>
+        {% endif %}
+
+        {% if message_summary %}
+        <!-- Summary Card -->
+        <article class="summary-card">
+            <div class="card-header">
+                <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10 9 9 9 8 9"/>
+                </svg>
+                <span class="card-label">Summary</span>
+            </div>
+            <p class="summary-text">{{ message_summary }}</p>
+        </article>
+        {% endif %}
+
+        {% if content_for_rag %}
+        <!-- Message Bubble -->
+        <article class="message-container">
+            <div class="message-bubble">
+                <div class="bubble-header">
+                    <span class="bubble-label">Full Message Content</span>
+                </div>
+                <div class="message-content">{{ content_for_rag }}</div>
+            </div>
+        </article>
+        {% elif not message_summary and not media_url %}
+        <!-- Empty State -->
+        <div class="empty-state">
+            <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10z"/>
+            </svg>
+            <p class="empty-text">No content available for this message.</p>
+        </div>
+        {% endif %}
+
+        {% if timestamp %}
+        <!-- Timestamp -->
+        <footer class="timestamp-bar">
+            <svg class="timestamp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <time class="timestamp-text">{{ timestamp }}</time>
+        </footer>
+        {% endif %}
+    </main>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Use URL encoding for the filename in the title -->
+    <title>Viewer: {{ document_filename }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            overflow: hidden; /* Prevent body scroll */
+        }
+        .viewer-header {
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .viewer-header h1 {
+            font-size: 1.1em;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 60%;
+        }
+        .navigation {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .nav-button {
+            background-color: #555;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.9em;
+            min-width: 80px;
+            text-align: center;
+        }
+        .nav-button:hover:not(:disabled) {
+            background-color: #777;
+        }
+        .nav-button:disabled {
+            background-color: #444;
+            color: #888;
+            cursor: not-allowed;
+        }
+        .page-info {
+            font-size: 0.9em;
+            min-width: 100px;
+            text-align: center;
+        }
+        .viewer-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: auto; /* Allow scrolling for large images */
+            position: relative; /* For loading indicator */
+        }
+        #page-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            box-shadow: 0 0 15px rgba(0,0,0,0.15);
+            background-color: white; /* Background for transparency */
+            display: none; /* Initially hidden */
+        }
+         .loading-indicator, .error-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2em;
+            color: #555;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px 25px;
+            border-radius: 5px;
+            text-align: center;
+            display: none; /* Initially hidden */
+         }
+        .error-message {
+             color: #d9534f;
+             font-weight: bold;
+         }
+         .loading-indicator i { margin-right: 10px; }
+         /* Simple pulse animation */
+         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+         .loading-indicator i { animation: pulse 1.5s infinite ease-in-out; }
+
+    </style>
+</head>
+<body>
+    <div class="viewer-header">
+        <h1>{{ document_filename }}</h1>
+        <div class="navigation">
+            <button id="prev-button" class="nav-button" disabled><i class="fas fa-chevron-left"></i> Prev</button>
+            <span id="page-info" class="page-info">Page - / -</span>
+            <button id="next-button" class="nav-button" disabled>Next <i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+    <div class="viewer-content">
+         <div id="loading-indicator" class="loading-indicator"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+         <div id="error-message" class="error-message">Error loading page.</div>
+        <img id="page-image" src="" alt="Document Page">
+    </div>
+
+    <!-- Pass data from Flask to JavaScript -->
+    <script>
+        const documentFilename = {{ document_filename | tojson }}; // Use tojson filter for safety
+        const relevantPages = {{ relevant_pages_json | safe }}; // Pages are already JSON stringified
+
+        const pageImage = document.getElementById('page-image');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const pageInfo = document.getElementById('page-info');
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const errorMessage = document.getElementById('error-message');
+
+
+        let currentPageIndex = 0;
+        const totalPages = relevantPages.length;
+
+        function displayPage(index) {
+            if (totalPages === 0 || index < 0 || index >= totalPages) {
+                console.error("Invalid page index or no pages:", index, totalPages);
+                pageInfo.textContent = "No pages";
+                pageImage.style.display = 'none';
+                loadingIndicator.style.display = 'none';
+                errorMessage.textContent = "No relevant pages found for this document.";
+                errorMessage.style.display = 'block';
+                prevButton.disabled = true;
+                nextButton.disabled = true;
+                return;
+            }
+
+            currentPageIndex = index;
+            const pageNumber = relevantPages[currentPageIndex];
+
+            // Update UI elements
+            pageInfo.textContent = `Page ${pageNumber} (${currentPageIndex + 1} / ${totalPages})`;
+            prevButton.disabled = (currentPageIndex === 0);
+            nextButton.disabled = (currentPageIndex === totalPages - 1);
+
+            // Show loading, hide image and error
+            loadingIndicator.style.display = 'block';
+            errorMessage.style.display = 'none';
+            pageImage.style.display = 'none'; // Hide image while loading new one
+
+
+            // Construct image URL - ENSURE filename is properly encoded for the URL path
+            // Use encodeURIComponent for path segments
+            const encodedFilename = encodeURIComponent(documentFilename);
+            const imageUrl = `/rajawaliai/api/view_page/${encodedFilename}/${pageNumber}`;
+            console.log("Fetching image:", imageUrl);
+
+            // Set image source and handle loading/error
+            pageImage.onload = () => {
+                loadingIndicator.style.display = 'none';
+                pageImage.style.display = 'block'; // Show image once loaded
+            };
+            pageImage.onerror = () => {
+                console.error("Error loading image for page:", pageNumber);
+                loadingIndicator.style.display = 'none';
+                errorMessage.textContent = `Error loading page ${pageNumber}.`;
+                errorMessage.style.display = 'block';
+            };
+            pageImage.src = imageUrl; // Start loading
+        }
+
+        // Event Listeners
+        prevButton.addEventListener('click', () => {
+            if (currentPageIndex > 0) {
+                displayPage(currentPageIndex - 1);
+            }
+        });
+
+        nextButton.addEventListener('click', () => {
+            if (currentPageIndex < totalPages - 1) {
+                displayPage(currentPageIndex + 1);
+            }
+        });
+
+        // Initial Load
+        displayPage(0); // Display the first relevant page on load
+
+    </script>
+</body>
+</html>
