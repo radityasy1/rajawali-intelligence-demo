@@ -48,6 +48,8 @@ If you want document search to work, embed the synthetic documents:
 
 ```bash
 python seed_database.py --embed --api-key YOUR_GEMINI_API_KEY
+
+cd ../.. # get back to root/main project directory
 ```
 
 ### 4. Run the Application
@@ -57,7 +59,7 @@ python seed_database.py --embed --api-key YOUR_GEMINI_API_KEY
 export GEMINI_API_KEY=your-api-key
 
 # Run server
-uvicorn app_demo:app --reload --port 8000
+uvicorn async_app:app --reload --port 8000
 ```
 
 ### 5. Access the Application
