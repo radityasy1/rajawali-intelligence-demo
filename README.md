@@ -27,7 +27,7 @@ AI-powered chatbot demo for portfolio showcase. Features Document Q&A and Market
 ### 1. Clone and Setup
 
 ```bash
-git clone <repository-url>
+git clone <repository-url> or `git clone https://github.com/radityasy1/rajawali-intelligence-demo`
 cd rajawali-intelligence-demo
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
