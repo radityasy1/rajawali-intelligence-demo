@@ -8331,8 +8331,10 @@ async def async_stream_chat(
             async for chunk in combined_streamer():
                 yield chunk
         finally:
+            # reset() requires the original context, but the streaming generator
+            # runs in a different one. Just set back to None instead.
             if api_key_token is not None:
-                CURRENT_REQUEST_GEMINI_API_KEY.reset(api_key_token)
+                CURRENT_REQUEST_GEMINI_API_KEY.set(None)
 
     return StreamingResponse(request_scoped_streamer(), media_type="text/html; charset=utf-8")
 
